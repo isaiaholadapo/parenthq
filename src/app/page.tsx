@@ -4,12 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useFamilyData } from "@/hooks/useFamilyData";
+import { useEvents } from "@/hooks/useEvents";
 import { getPregnancyStats, getBabySize, calculateBabyAge } from "@/lib/pregnancy";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
@@ -20,36 +17,41 @@ import {
   DialogFooter,
   DialogDescription
 } from "@/components/ui/dialog";
-import { Phone, MapPin, Calendar, LogOut, PartyPopper } from "lucide-react";
+import { 
+  Bell, 
+  Settings, 
+  Heart, 
+  Apple, 
+  PhoneCall, 
+  MapPin, 
+  Calendar, 
+  ChevronRight, 
+  PartyPopper 
+} from "lucide-react";
+import { InsightWidget } from "@/components/InsightWidget";
 
 export default function HomePage() {
   const { user, loading: authLoading, logOut } = useAuth();
   const { familyData, loading: familyLoading, transitionToPostpartum } = useFamilyData();
+  const { events, loading: eventsLoading } = useEvents();
   const router = useRouter();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [actualBirthDate, setActualBirthDate] = useState("");
 
-  // Redirect to login if unauthenticated
   useEffect(() => {
     if (!authLoading && !user) {
       router.push("/login");
     }
   }, [user, authLoading, router]);
 
-  // Prevent flash of content before redirecting
-  if (!user) {
-    return null;
-  }
+  if (!user) return null;
 
   const dueDateParam = familyData?.dueDate ? familyData.dueDate.toISOString() : "2026-12-05";
   const { weeks, days, daysRemaining, progressPercent } = getPregnancyStats(dueDateParam);
   const babySize = getBabySize(weeks);
-
   const username = user.email?.split("@")[0] || "User";
-
   const isPostpartum = familyData?.mode === "postpartum";
-  // The decode logic in useFamilyData can return simple Dates, if it exists format it properly for the age function
   const birthDateParam = familyData?.actualBirthDate ? (familyData.actualBirthDate as any)?.toDate?.() ?? familyData.actualBirthDate : undefined;
 
   const handleTransition = async () => {
@@ -63,170 +65,195 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 pb-32 flex flex-col items-center">
-      <div className="w-full max-w-md md:max-w-5xl mx-auto md:px-8 flex flex-col gap-6 pt-4">
+    <>
+      <div className="p-6 md:p-8 max-w-6xl w-full mx-auto space-y-12 pb-32 md:pb-12">
         
-        {/* Top App Bar */}
-        <div className="flex justify-between items-center px-2">
-          <h1 className="text-xl font-bold text-slate-800 tracking-tight">ParentHq</h1>
-          <button onClick={logOut} className="text-slate-400 hover:text-slate-800 transition" aria-label="Sign out">
-            <LogOut size={20} />
-          </button>
-        </div>
-
-        {/* Header / HUD Card */}
         {isPostpartum ? (
-          <Card className="bg-emerald-600 shadow-md rounded-3xl overflow-hidden border-none text-white relative">
-            <div className="absolute -top-4 -right-8 opacity-10 pointer-events-none">
-              <PartyPopper size={160} />
-            </div>
-            <CardContent className="p-6 flex flex-col gap-6 relative z-10">
-              <div>
-                <p className="text-emerald-100 font-medium text-sm">Hello, {username}</p>
-                <div className="flex flex-col mt-2 gap-1 mb-2">
-                  <h2 className="text-4xl font-black text-white tracking-tight drop-shadow-sm leading-tight">Postpartum</h2>
-                </div>
-                <p className="text-emerald-50 font-medium">You did it! Welcome to parenthood.</p>
-              </div>
-
-              <div className="bg-emerald-700/50 p-5 rounded-2xl border border-emerald-500/50 shadow-inner">
-                 <p className="text-[10px] text-emerald-200 font-bold uppercase tracking-widest mb-1.5">Baby Age</p>
-                 <p className="font-extrabold text-white text-3xl">{birthDateParam ? calculateBabyAge(birthDateParam) : "Born!"}</p>
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card className="bg-white shadow-sm border border-slate-200/60 rounded-2xl overflow-hidden">
-            <CardContent className="p-6 flex flex-col gap-6">
-              <div>
-                <p className="text-slate-500 font-medium text-sm">Hello, {username}</p>
-                <div className="flex items-baseline gap-2 mt-1">
-                  <h2 className="text-5xl font-black text-slate-900 tracking-tighter shadow-sm">{weeks}<span className="text-2xl text-slate-400 font-bold ml-1">w + {days}d</span></h2>
-                </div>
-                <p className="text-indigo-600 font-semibold mt-2 text-sm">❤️ {daysRemaining} days remaining</p>
-              </div>
-
-              <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-sm font-semibold text-slate-600">Trimester Progress</span>
-                  <span className="text-sm font-black text-indigo-600">{Math.round(progressPercent)}%</span>
-                </div>
-                <Progress value={progressPercent} className="h-3 bg-slate-100 rounded-full overflow-hidden" indicatorClassName="bg-indigo-600" />
-              </div>
-
-              <div className="bg-slate-50 p-4 rounded-2xl flex items-center gap-4 border border-slate-100 mt-2">
-                 <div className="text-3xl drop-shadow-sm">🍋</div>
-                 <div>
-                   <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Baby Size</p>
-                   <p className="font-semibold text-slate-800 text-sm leading-tight">{babySize}</p>
+           <section className="relative">
+             <div className="bg-emerald-600 rounded-lg p-10 shadow-xl overflow-hidden group">
+               <div className="relative z-10 flex flex-col h-full">
+                 <div className="flex justify-between items-start mb-8">
+                   <div>
+                     <h2 className="font-headline text-5xl text-white mb-2">Hello, {username}</h2>
+                     <p className="text-emerald-100 font-bold tracking-wide">You did it! Welcome to parenthood.</p>
+                   </div>
                  </div>
+                 <div className="mt-auto bg-emerald-700/50 p-6 rounded-2xl border border-emerald-500/50 shadow-inner inline-block w-fit">
+                    <p className="text-[10px] text-emerald-200 font-bold uppercase tracking-widest mb-1.5">Baby Age</p>
+                    <p className="font-extrabold text-white text-4xl">{birthDateParam ? calculateBabyAge(birthDateParam) : "Born!"}</p>
+                 </div>
+               </div>
+             </div>
+           </section>
+        ) : (
+          <section className="relative">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+              {/* Hero Card */}
+              <div className="lg:col-span-8 bg-surface-container-lowest rounded-[24px] p-10 shadow-xl shadow-indigo-900/5 relative overflow-hidden group">
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary-container/20 rounded-full blur-3xl transition-transform group-hover:scale-110 duration-1000"></div>
+                <div className="relative z-10 flex flex-col h-full min-h-[200px]">
+                  <div className="flex flex-col md:flex-row justify-between items-start mb-8 gap-4">
+                    <div>
+                      <h2 className="font-headline text-5xl text-on-surface mb-2">Hello, {username}</h2>
+                      <p className="text-secondary font-bold tracking-wide">Week {weeks}, Day {days} of your journey</p>
+                    </div>
+                    <div className="bg-surface-container-low px-4 py-2 rounded-full flex items-center gap-2">
+                      <Heart className="text-tertiary" size={16} fill="currentColor" />
+                      <span className="text-sm font-bold text-on-surface-variant">{daysRemaining} days remaining</span>
+                    </div>
+                  </div>
+                  <div className="mt-auto pt-8">
+                    <div className="flex justify-between items-end mb-4">
+                      <div className="space-y-1">
+                        <p className="text-sm text-on-surface-variant font-bold">Trimester Progress</p>
+                        <p className="font-headline text-3xl text-primary">{Math.round(progressPercent)}% Complete</p>
+                      </div>
+                      <span className="text-xs font-bold bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full uppercase tracking-tighter">
+                        {weeks < 14 ? "First" : weeks < 28 ? "Second" : "Third"} Trimester
+                      </span>
+                    </div>
+                    {/* Progress Veil */}
+                    <div className="h-6 w-full bg-surface-container-high rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-primary to-primary-container rounded-full shadow-lg shadow-primary/20 transition-all duration-1000"
+                        style={{ width: `${Math.max(5, progressPercent)}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </CardContent>
-          </Card>
+
+              {/* Baby Size Card */}
+              <div className="lg:col-span-4 bg-tertiary-container/30 backdrop-blur-md rounded-[24px] p-8 flex flex-col justify-center items-center text-center border-2 border-white/50">
+                <p className="text-tertiary font-bold tracking-widest uppercase text-xs mb-6">BABY SIZE</p>
+                <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center mb-6 shadow-inner text-6xl">
+                  🍋
+                </div>
+                <h3 className="font-headline text-3xl text-on-tertiary-container mb-2">{babySize}</h3>
+                <p className="text-on-tertiary-container/60 text-sm italic font-bold">Tiny but mighty growth phase</p>
+              </div>
+            </div>
+          </section>
         )}
 
-        {/* Action Row */}
-        <div className="grid grid-cols-2 gap-4">
-          <a title="Call Midwife" href={familyData?.midwifePhone ? `tel:${familyData.midwifePhone}` : "#"} className="block group">
-            <Card className="bg-white shadow-sm border border-slate-200/60 rounded-2xl cursor-pointer group-hover:-translate-y-0.5 group-hover:shadow-md transition-all h-full">
-              <CardContent className="p-5 flex flex-col items-center text-center gap-3">
-                <div className="p-3 bg-indigo-100 text-indigo-700 rounded-xl">
-                  <Phone size={22} strokeWidth={2.5} />
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-6">
+            <h4 className="font-headline text-3xl text-on-surface ml-2">Quick Support</h4>
+            <div className="grid grid-cols-2 gap-4">
+              <a href={familyData?.midwifePhone ? `tel:${familyData.midwifePhone}` : "#"} className="block aspect-square bg-surface-container-low hover:bg-primary-container/20 transition-all rounded-[24px] p-6 flex flex-col justify-between items-start group">
+                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                  <PhoneCall className="text-primary" size={24} />
                 </div>
-                <div>
-                  <p className="font-semibold text-slate-800 text-sm">Midwife Dial</p>
+                <div className="text-left">
+                  <p className="font-bold text-on-surface text-lg">Midwife Dial</p>
+                  <p className="text-xs font-bold text-on-surface-variant">Direct clinical line</p>
                 </div>
-              </CardContent>
-            </Card>
-          </a>
-          
-          <a title="Maternity Route" href={familyData?.maternityUnitRoute || "#"} target={familyData?.maternityUnitRoute ? "_blank" : undefined} rel="noopener noreferrer" className="block group">
-            <Card className="bg-white shadow-sm border border-slate-200/60 rounded-2xl cursor-pointer group-hover:-translate-y-0.5 group-hover:shadow-md transition-all h-full">
-              <CardContent className="p-5 flex flex-col items-center text-center gap-3">
-                 <div className="p-3 bg-indigo-100 text-indigo-700 rounded-xl">
-                  <MapPin size={22} strokeWidth={2.5} />
+              </a>
+              <a href={familyData?.maternityUnitRoute || "#"} target="_blank" rel="noreferrer" className="block aspect-square bg-surface-container-low hover:bg-secondary-container/30 transition-all rounded-[24px] p-6 flex flex-col justify-between items-start group">
+                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                  <MapPin className="text-secondary" size={24} />
                 </div>
-                 <div>
-                  <p className="font-semibold text-slate-800 text-sm">Maternity Unit</p>
+                <div className="text-left">
+                  <p className="font-bold text-on-surface text-lg">Maternity Unit</p>
+                  <p className="text-xs font-bold text-on-surface-variant">Find quickest route</p>
                 </div>
-              </CardContent>
-            </Card>
-          </a>
-        </div>
+              </a>
+            </div>
+          </div>
 
-        {/* Reminders Widget */}
-        <div className="mt-2">
-          <h3 className="font-semibold text-slate-900 text-lg mb-3 px-2 tracking-tight">Upcoming Events</h3>
-          <Card className="bg-white shadow-sm border border-slate-200/60 rounded-2xl overflow-hidden">
-            <CardContent className="p-0 flex flex-col">
-               <div className="p-4 border-b border-slate-50 flex items-center gap-4 hover:bg-slate-50 transition-colors">
-                 <div className="p-2.5 bg-indigo-100 text-indigo-700 rounded-lg">
-                   <Calendar size={18} strokeWidth={2.5} />
+          <div className="space-y-6">
+            <div className="flex justify-between items-center px-2">
+              <h4 className="font-headline text-3xl text-on-surface">Upcoming</h4>
+              <button className="text-primary font-bold text-sm hover:underline">View Calendar</button>
+            </div>
+            <div className="space-y-3">
+              {eventsLoading ? (
+                <div className="bg-surface-container-lowest p-6 rounded-[24px] shadow-sm animate-pulse flex items-center gap-6">
+                   <div className="w-14 h-14 bg-surface-container-low rounded-2xl"></div>
+                   <div className="flex-1 space-y-2">
+                     <div className="h-4 bg-surface-container-low rounded w-1/3"></div>
+                     <div className="h-3 bg-surface-container-low rounded w-1/2"></div>
+                   </div>
+                </div>
+              ) : events.length === 0 ? (
+                 <div className="bg-surface-container-lowest p-6 rounded-[24px] shadow-sm flex flex-col items-center justify-center text-center">
+                    <p className="text-on-surface-variant font-bold text-sm">No upcoming events scheduled.</p>
                  </div>
-                 <div className="flex-1">
-                   <p className="font-semibold text-slate-900 text-sm">20-Week Scan</p>
-                   <p className="text-slate-500 text-xs mt-0.5 font-medium">Tomorrow, 10:00 AM</p>
-                 </div>
-                 <Badge variant="secondary" className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 shadow-none border-none font-bold">Soon</Badge>
-               </div>
-               
-               <div className="p-4 flex items-center gap-4 hover:bg-slate-50 transition-colors">
-                 <div className="p-2.5 bg-slate-100 text-slate-600 rounded-lg">
-                   <Calendar size={18} strokeWidth={2.5} />
-                 </div>
-                 <div className="flex-1">
-                   <p className="font-semibold text-slate-900 text-sm">Glucose Test</p>
-                   <p className="text-slate-500 text-xs mt-0.5 font-medium">Aug 15, 08:30 AM</p>
-                 </div>
-               </div>
-            </CardContent>
-          </Card>
-        </div>
+              ) : (
+                events.slice(0, 3).map((event, idx) => {
+                  const isSoon = event.date.getTime() - new Date().getTime() < 48 * 60 * 60 * 1000;
+                  
+                  return (
+                    <div key={event.id} className="bg-surface-container-lowest p-6 rounded-[24px] shadow-sm border border-transparent hover:border-outline-variant/15 transition-all flex items-center gap-6 cursor-pointer">
+                      <div className={`w-14 h-14 rounded-2xl flex flex-col items-center justify-center ${idx === 0 ? 'bg-primary-container/30 text-primary' : 'bg-surface-container-low text-on-surface-variant'}`}>
+                        <Calendar size={24} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h5 className="font-bold text-lg text-on-surface">{event.title}</h5>
+                          {isSoon && (
+                            <span className="px-2 py-0.5 bg-error/10 text-error text-[10px] font-extrabold rounded uppercase tracking-wider">Soon</span>
+                          )}
+                        </div>
+                        <p className="text-sm font-bold text-on-surface-variant">
+                          {event.date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}, {event.date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}
+                        </p>
+                      </div>
+                      <button className="p-2 hover:bg-surface-container-low rounded-full">
+                        <ChevronRight className="text-on-surface-variant" />
+                      </button>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        </section>
 
-        {/* Postpartum Toggle Button */}
+        <InsightWidget />
+
         {!isPostpartum && (
-          <div className="mt-6 flex justify-center pb-4">
+          <div className="flex justify-center pb-12">
              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
               {/* @ts-expect-error asChild is a valid Radix prop but TS fails to resolve it */}
               <DialogTrigger asChild>
-                <Button className="rounded-full bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800 font-bold border border-emerald-200 transition-colors px-6">
-                  <PartyPopper size={16} className="mr-2" />
-                  The Baby is Here!
-                </Button>
+                <button className="bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80 transition-colors px-6 py-4 rounded-full flex items-center gap-3 shadow-lg shadow-secondary/10 animate-pulse-slow">
+                  <PartyPopper className="text-secondary" />
+                  <span className="font-bold tracking-tight text-lg">The Baby is Here!</span>
+                </button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px] rounded-3xl bg-slate-50">
+              <DialogContent className="sm:max-w-[425px] rounded-[32px] bg-surface-container-lowest border-none p-8">
                 <DialogHeader>
-                  <DialogTitle className="text-2xl font-bold tracking-tight text-slate-800 flex items-center gap-2">
-                    Congratulations! <PartyPopper className="text-amber-500" />
+                  <DialogTitle className="font-headline text-4xl text-on-surface flex items-center gap-3">
+                    Congratulations! <PartyPopper className="text-amber-500" size={32} />
                   </DialogTitle>
-                  <DialogDescription className="text-slate-500 mb-2 font-medium text-sm">
+                  <DialogDescription className="text-on-surface-variant font-bold mt-2">
                     Ready to switch ParentHq into Postpartum Mode? This updates your dashboard to track your newborn's age.
                   </DialogDescription>
                 </DialogHeader>
-                <div className="flex flex-col gap-2 py-4">
-                  <label className="text-xs font-bold uppercase text-slate-500 ml-1">Actual Birth Date</label>
-                   <Input
+                <div className="flex flex-col gap-2 py-6">
+                  <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant ml-1">Actual Birth Date</label>
+                  <Input
                     type="date"
-                    className="border-slate-200 bg-white rounded-xl focus-visible:ring-emerald-600 h-12 px-5 text-slate-800 font-bold"
+                    className="border-outline-variant bg-surface-container-lowest rounded-2xl focus-visible:ring-primary h-14 px-5 text-on-surface font-bold"
                     value={actualBirthDate}
                     onChange={(e) => setActualBirthDate(e.target.value)}
                   />
                 </div>
                 <DialogFooter>
-                  <Button 
+                  <button 
                     onClick={handleTransition} 
                     disabled={!actualBirthDate} 
-                    className="w-full rounded-2xl bg-emerald-600 hover:bg-emerald-700 font-bold h-12 text-sm shadow-sm transition-transform active:scale-95"
+                    className="w-full rounded-full bg-primary hover:bg-primary/90 text-on-primary font-bold h-14 shadow-sm transition-transform active:scale-95 disabled:opacity-50"
                   >
                     Transition to Postpartum
-                  </Button>
+                  </button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
           </div>
         )}
-
       </div>
-    </div>
+    </>
   );
 }

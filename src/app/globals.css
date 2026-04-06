@@ -46,6 +46,62 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  --color-on-primary-fixed-variant: #4d4a76;
+  --color-on-error-container: #68001f;
+  --color-surface-container-low: #f2f4f6;
+  --color-outline: #767b7f;
+  --color-inverse-primary: #cec9fe;
+  --color-background: #f8f9fb;
+  --color-on-background: #2e3336;
+  --color-on-secondary-fixed: #3d4c39;
+  --color-surface-variant: #dee3e7;
+  --color-primary-dim: #514e7b;
+  --color-secondary-container: #e4f6dc;
+  --color-surface-container-lowest: #ffffff;
+  --color-on-secondary-fixed-variant: #596955;
+  --color-outline-variant: #adb3b6;
+  --color-surface-container: #ebeef1;
+  --color-on-tertiary: #fff7f7;
+  --color-surface-container-highest: #dee3e7;
+  --color-on-surface: #2e3336;
+  --color-secondary-fixed-dim: #d6e8ce;
+  --color-on-primary-container: #44416c;
+  --color-surface-bright: #f8f9fb;
+  --color-error: #ac3149;
+  --color-primary-container: #cec9fe;
+  --color-surface-container-high: #e5e9ec;
+  --color-on-tertiary-fixed-variant: #6f484c;
+  --color-tertiary: #7d5458;
+  --color-on-tertiary-fixed: #4f2c30;
+  --color-tertiary-fixed-dim: #eeb9bd;
+  --color-primary-fixed-dim: #c0bbef;
+  --color-on-primary: #fcf7ff;
+  --color-on-secondary-container: #4f5e4b;
+  --color-secondary: #54634f;
+  --color-surface-dim: #d5dbdf;
+  --color-tertiary-dim: #70484c;
+  --color-surface: #f8f9fb;
+  --color-on-tertiary-container: #653f42;
+  --color-on-surface-variant: #5a6063;
+  --color-tertiary-container: #fdc7cb;
+  --color-on-secondary: #ecfee4;
+  --color-inverse-surface: #0c0f10;
+  --color-tertiary-fixed: #fdc7cb;
+  --color-on-primary-fixed: #302d57;
+  --color-secondary-dim: #485744;
+  --color-inverse-on-surface: #9b9d9f;
+  --color-error-dim: #770326;
+  --color-primary-fixed: #cec9fe;
+  --color-primary: #5d5a87;
+  --color-error-container: #f76a80;
+  --color-secondary-fixed: #e4f6dc;
+  --color-on-error: #fff7f7;
+  --color-surface-tint: #5d5a87;
+  
+  --font-headline: var(--font-newsreader);
+  --font-body: var(--font-manrope);
+  --font-label: var(--font-manrope);
 }
 
 :root {

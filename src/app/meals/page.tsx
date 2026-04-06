@@ -1,192 +1,100 @@
 "use client";
 
-import { useState } from "react";
-import { useAuth } from "@/context/AuthContext";
-import { useMeals, MealItem } from "@/hooks/useMeals";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trash2, Ban } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
+import { db } from "@/lib/firebase";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { Utensils } from "lucide-react";
 
-type CategoryType = "Strictly Avoid" | "Safe Groceries" | "Recipes";
+export default function MealsFrontendPage() {
+  const [meals, setMeals] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-export default function MealsPage() {
-  const { user } = useAuth();
-  const { meals, loading, addFood, deleteFood } = useMeals();
-
-  const [newName, setNewName] = useState("");
-  const [newNotes, setNewNotes] = useState("");
-  const [category, setCategory] = useState<CategoryType>("Strictly Avoid");
-
-  const handleCreate = async () => {
-    if (!newName.trim() || !user) return;
-    await addFood(newName.trim(), category, newNotes.trim(), user.uid);
-    setNewName("");
-    setNewNotes("");
-  };
-
-  if (loading) {
-    return (
-      <div className="w-full flex items-center justify-center p-12">
-        <p className="text-slate-500 animate-pulse font-medium">Loading pantry...</p>
-      </div>
-    );
-  }
-
-  const avoidMeals = meals.filter((m) => m.category === "Strictly Avoid");
-  const clearMeals = meals.filter((m) => m.category === "Safe Groceries");
-  const recipeMeals = meals.filter((m) => m.category === "Recipes");
-
-  const MealList = ({ list, isAvoidTab }: { list: typeof meals; isAvoidTab: boolean }) => {
-    if (list.length === 0) {
-      if (isAvoidTab) {
-        return (
-          <div className="text-center py-12 bg-white rounded-3xl border border-dashed border-red-200 mt-4 shadow-sm">
-            <Ban className="mx-auto mb-2 text-red-300" size={24} />
-            <p className="text-slate-500 font-medium text-sm">
-              Don't forget to add things like Zobo and Snail!
-            </p>
-          </div>
-        );
-      }
-      return (
-        <div className="text-center py-12 bg-white rounded-3xl border border-dashed border-slate-200 mt-4 shadow-sm">
-          <p className="text-slate-400 font-medium text-sm">
-            Nothing logged here yet.
-          </p>
-        </div>
-      );
+  useEffect(() => {
+    const familyId = process.env.NEXT_PUBLIC_FAMILY_ID;
+    if (!familyId) {
+      setLoading(false);
+      return;
     }
 
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 pb-8">
-        {list.map((meal) => (
-          <Card 
-            key={meal.id} 
-            className={cn(
-              "p-4 rounded-2xl flex flex-col gap-2 shadow-sm transition-all duration-300",
-              isAvoidTab ? "border-red-300 bg-red-50/50" : "bg-white shadow-sm border border-slate-200/60 hover:shadow-md"
-            )}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                {isAvoidTab && <Ban size={18} className="text-red-500" strokeWidth={2.5} />}
-                <span className={cn(
-                  "font-bold text-lg leading-tight",
-                  isAvoidTab ? "text-red-900" : "text-slate-800"
-                )}>
-                  {meal.name}
-                </span>
-              </div>
-              <button 
-                onClick={() => deleteFood(meal.id)} 
-                className={cn(
-                  "transition-colors p-2 rounded-full",
-                  isAvoidTab ? "text-red-300 hover:text-red-600 hover:bg-red-100" : "text-slate-300 hover:text-red-500 hover:bg-slate-50"
-                )}
-              >
-                <Trash2 size={18} />
-              </button>
-            </div>
-            {meal.notes && (
-              <p className={cn(
-                "text-sm font-medium pl-0.5",
-                isAvoidTab ? "text-red-700/80" : "text-slate-500"
-              )}>
-                {meal.notes}
-              </p>
-            )}
-          </Card>
-        ))}
-      </div>
-    );
-  };
+    const mealsRef = collection(db, "meals");
+    const q = query(mealsRef, where("familyId", "==", familyId));
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const fetched: any[] = [];
+      snapshot.forEach((doc) => {
+        fetched.push({ id: doc.id, ...doc.data() });
+      });
+      fetched.sort((a, b) => a.name.localeCompare(b.name));
+      setMeals(fetched);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
-    <div className="w-full flex flex-col items-center">
-      <div className="w-full max-w-md md:max-w-5xl mx-auto md:px-8 flex flex-col">
-        
-        {/* Sticky Header / Input */}
-        <div className="sticky top-0 bg-white/90 backdrop-blur-md pt-6 pb-4 px-4 z-10 border-b border-slate-200 shadow-sm">
-          <h1 className="text-2xl font-bold text-slate-800 tracking-tight mb-4">Diet & Meals</h1>
-          
-          <div className="bg-white p-4 rounded-3xl shadow-sm border border-slate-200 flex flex-col gap-3">
-            <div className="flex items-center gap-3 w-full">
-               <div className="flex-1 min-w-0">
-                 <Select value={category} onValueChange={(val) => setCategory(val as CategoryType)}>
-                  <SelectTrigger className="w-full rounded-full border-slate-200 bg-slate-50 text-sm font-medium h-10 outline-none focus-visible:ring-1 focus-visible:ring-indigo-600">
-                    <SelectValue placeholder="Category" />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-2xl shadow-lg border-slate-100 pb-2">
-                    <SelectItem value="Strictly Avoid" className="font-bold cursor-pointer text-red-600 focus:bg-red-50 py-2">🚫 Strictly Avoid</SelectItem>
-                    <SelectItem value="Safe Groceries" className="font-medium cursor-pointer py-2">🛒 Safe Groceries</SelectItem>
-                    <SelectItem value="Recipes" className="font-medium cursor-pointer py-2">🍳 Recipes</SelectItem>
-                  </SelectContent>
-                </Select>
-               </div>
-            </div>
-
-            <Input
-              placeholder={category === "Strictly Avoid" ? "e.g. Raw Sushi..." : "e.g. Greek Yogurt..."}
-              className="border-slate-100 bg-slate-50 rounded-full focus-visible:ring-indigo-600 h-10 px-5 font-bold text-slate-800"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-            />
-            
-            <Input
-              placeholder="Any notes? (Optional)"
-              className="border-slate-100 bg-slate-50 rounded-full focus-visible:ring-indigo-600 h-10 px-5 text-sm"
-              value={newNotes}
-              onChange={(e) => setNewNotes(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter') handleCreate(); }}
-            />
-            
-            <Button 
-              onClick={handleCreate}
-              disabled={!newName.trim()}
-              className={cn(
-                "w-full rounded-full font-bold h-10 text-xs tracking-wide uppercase transition-transform active:scale-95 mt-1",
-                category === "Strictly Avoid" 
-                  ? "bg-red-500 hover:bg-red-600 text-white" 
-                  : "bg-indigo-600 hover:bg-indigo-700"
-              )}
-            >
-              Add to {category.split(" ")[0]}
-            </Button>
-          </div>
-        </div>
-
-        {/* Categories Tabs */}
-        <div className="px-4 pt-4">
-          <Tabs defaultValue="Strictly Avoid" className="w-full">
-            <TabsList className="w-full flex bg-slate-200/50 p-1.5 rounded-2xl h-12 overflow-hidden shadow-inner">
-              <TabsTrigger value="Strictly Avoid" className="rounded-xl flex-1 text-[11px] px-1 font-bold data-[state=active]:bg-red-500 data-[state=active]:text-white data-[state=active]:shadow-md transition-all">Avoid</TabsTrigger>
-              <TabsTrigger value="Safe Groceries" className="rounded-xl flex-1 text-[11px] px-1 font-bold data-[state=active]:bg-white data-[state=active]:text-indigo-700 data-[state=active]:shadow-sm transition-all">Groceries</TabsTrigger>
-              <TabsTrigger value="Recipes" className="rounded-xl flex-1 text-[11px] px-1 font-bold data-[state=active]:bg-white data-[state=active]:text-indigo-700 data-[state=active]:shadow-sm transition-all">Recipes</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="Strictly Avoid" className="outline-none">
-              <MealList list={avoidMeals} isAvoidTab={true} />
-            </TabsContent>
-            <TabsContent value="Safe Groceries" className="outline-none">
-              <MealList list={clearMeals} isAvoidTab={false} />
-            </TabsContent>
-            <TabsContent value="Recipes" className="outline-none">
-              <MealList list={recipeMeals} isAvoidTab={false} />
-            </TabsContent>
-          </Tabs>
-        </div>
-
+    <div className="max-w-7xl mx-auto py-8 lg:py-12 px-4 md:px-8">
+      <div className="mb-10 text-center md:text-left">
+        <h1 className="text-slate-900 font-semibold tracking-tight text-3xl md:text-4xl">
+          Safe Meals
+        </h1>
+        <p className="text-slate-500 mt-3 text-lg max-w-2xl">
+          Curated pregnancy-safe recipes and nutritional guidelines.
+        </p>
       </div>
+
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="bg-white shadow-sm border border-slate-200/60 rounded-2xl p-6 h-48 animate-pulse">
+              <div className="h-6 w-2/3 bg-slate-200 rounded mb-4"></div>
+              <div className="flex gap-2 mb-4">
+                <div className="h-4 w-16 bg-slate-200 rounded"></div>
+                <div className="h-4 w-20 bg-slate-200 rounded"></div>
+              </div>
+              <div className="space-y-2">
+                <div className="h-3 w-full bg-slate-200 rounded"></div>
+                <div className="h-3 w-full bg-slate-200 rounded"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : meals.length === 0 ? (
+        <div className="bg-slate-50 border border-slate-200/50 rounded-3xl p-16 text-center shadow-inner">
+           <div className="bg-white w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+            <Utensils className="text-slate-300" size={32} />
+          </div>
+          <h2 className="text-xl font-bold text-slate-700 mb-2">No Meals Saved</h2>
+          <p className="text-slate-500 max-w-md mx-auto">
+            Head over to the Admin Hub to start building your recipe library!
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {meals.map((m) => (
+            <div key={m.id} className="bg-white shadow-sm border border-slate-200/60 rounded-2xl overflow-hidden hover:shadow-md transition-shadow duration-200 p-6 flex flex-col h-full">
+              <div className="mb-4">
+                <h3 className="text-slate-900 font-semibold tracking-tight text-xl mb-3 leading-tight">{m.name}</h3>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[10px] font-extrabold px-2 py-0.5 uppercase tracking-wider rounded-md bg-slate-100 text-slate-500">
+                    {m.category}
+                  </span>
+                  {m.focus && (
+                    <span className="text-[10px] font-extrabold px-2 py-0.5 uppercase tracking-wider rounded-md bg-indigo-50 text-indigo-600">
+                      {m.focus}
+                    </span>
+                  )}
+                </div>
+              </div>
+              {m.notes && (
+                <div className="mt-auto pt-4 border-t border-slate-100 flex-grow">
+                  <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-wrap">{m.notes}</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

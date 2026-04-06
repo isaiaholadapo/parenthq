@@ -1,201 +1,117 @@
 "use client";
 
-import { useState } from "react";
-import { format } from "date-fns";
-import { useAuth } from "@/context/AuthContext";
-import { useMilestones } from "@/hooks/useMilestones";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Card } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { Trash2, Sparkles, Image as ImageIcon, Loader2 } from "lucide-react";
-import Image from "next/image";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useState, useEffect } from "react";
+import { db } from "@/lib/firebase";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { Image as ImageIcon } from "lucide-react";
 
-export default function MilestonesPage() {
-  const { user } = useAuth();
-  const { milestones, loading, addMilestone, deleteMilestone } = useMilestones();
+export default function MilestonesFrontendPage() {
+  const [milestones, setMilestones] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [newTitle, setNewTitle] = useState("");
-  const [newDate, setNewDate] = useState("");
-  const [newNotes, setNewNotes] = useState("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
-
-  const handleCreate = async () => {
-    if (!newTitle.trim() || !newDate || !user) return;
-    setIsUploading(true);
-
-    try {
-      const parsedDate = new Date(newDate);
-      await addMilestone(newTitle.trim(), parsedDate, newNotes.trim(), imageFile, user.uid);
-      setNewTitle("");
-      setNewDate("");
-      setNewNotes("");
-      setImageFile(null);
-      setDialogOpen(false);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsUploading(false);
+  useEffect(() => {
+    const familyId = process.env.NEXT_PUBLIC_FAMILY_ID;
+    if (!familyId) {
+      setLoading(false);
+      return;
     }
-  };
 
-  if (loading) {
-    return (
-      <div className="w-full flex flex-col items-center animate-in fade-in duration-300">
-        <div className="w-full max-w-md flex flex-col pt-6 px-4">
-          <div className="flex items-center justify-between mb-6">
-            <Skeleton className="h-8 w-32 bg-slate-200" />
-            <Skeleton className="h-10 w-28 rounded-full bg-slate-200" />
-          </div>
-          <div className="flex flex-col gap-6 pb-12">
-            <Skeleton className="h-64 w-full rounded-3xl bg-slate-200" />
-            <Skeleton className="h-64 w-full rounded-3xl bg-slate-200" />
-          </div>
-        </div>
-      </div>
-    );
-  }
+    const milestonesRef = collection(db, "milestones");
+    const q = query(milestonesRef, where("familyId", "==", familyId));
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const fetched: any[] = [];
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        fetched.push({
+          id: docSnap.id,
+          ...data,
+          date: data.date?.toDate ? data.date.toDate() : new Date(),
+        });
+      });
+
+      // Sort by newest first
+      fetched.sort((a, b) => b.date.getTime() - a.date.getTime());
+      setMilestones(fetched);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
-    <div className="w-full flex flex-col items-center">
-      <div className="w-full max-w-md md:max-w-5xl mx-auto md:px-8 flex flex-col">
-        
-        {/* Sticky Header */}
-        <div className="sticky top-0 bg-white/90 backdrop-blur-md pt-6 pb-4 px-4 z-10 border-b border-slate-200 shadow-sm flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Timeline</h1>
-          
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-             {/* @ts-expect-error asChild is a valid Radix prop but TS fails to resolve it */}
-             <DialogTrigger asChild>
-              <Button className="rounded-full bg-indigo-600 hover:bg-indigo-700 font-bold shadow-md">
-                + New Entry
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] rounded-3xl bg-slate-50">
-              <DialogHeader>
-                <DialogTitle className="text-2xl font-bold tracking-tight text-slate-800">Log Milestone</DialogTitle>
-              </DialogHeader>
-              <div className="flex flex-col gap-4 py-4">
-                <Input
-                  placeholder="e.g. First Ultrasound!"
-                  className="border-slate-200 bg-white rounded-xl focus-visible:ring-indigo-600 h-12 px-5 font-bold"
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  disabled={isUploading}
-                />
-                <Input
-                  type="date"
-                  className="border-slate-200 bg-white rounded-xl focus-visible:ring-indigo-600 h-12 px-5 text-slate-700 font-medium"
-                  value={newDate}
-                  onChange={(e) => setNewDate(e.target.value)}
-                  disabled={isUploading}
-                />
-                <Textarea
-                  placeholder="Journal notes... (Optional)"
-                  className="border-slate-200 bg-white rounded-xl focus-visible:ring-indigo-600 min-h-24 p-4 text-sm resize-none"
-                  value={newNotes}
-                  onChange={(e) => setNewNotes(e.target.value)}
-                  disabled={isUploading}
-                />
-                
-                {/* Custom File Upload Styling */}
-                <div className="relative border-2 border-dashed border-slate-200 bg-white rounded-xl h-20 flex items-center justify-center overflow-hidden hover:border-indigo-300 transition-colors">
-                  <input 
-                    type="file" 
-                    accept="image/*"
-                    onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-                    disabled={isUploading}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  />
-                  <div className="flex flex-col items-center pointer-events-none">
-                     {imageFile ? (
-                       <span className="text-indigo-600 font-bold text-sm truncate max-w-[200px]">{imageFile.name}</span>
-                     ) : (
-                       <>
-                         <ImageIcon size={24} className="text-slate-400 mb-1" />
-                         <span className="text-slate-500 font-medium text-xs">Attach Photo (Optional)</span>
-                       </>
-                     )}
-                  </div>
-                </div>
-
-              </div>
-              <DialogFooter>
-                <Button 
-                  onClick={handleCreate} 
-                  disabled={!newTitle.trim() || !newDate || isUploading} 
-                  className="w-full rounded-2xl bg-indigo-600 hover:bg-indigo-700 font-bold h-12 text-sm flex items-center justify-center"
-                >
-                  {isUploading ? (
-                    <><Loader2 className="animate-spin mr-2" size={18} /> Uploading...</>
-                  ) : (
-                    "Save to Timeline"
-                  )}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </div>
-
-        {/* Timeline Feed */}
-        <div className="px-4 pt-6 pb-12">
-          {milestones.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-3xl border border-dashed border-slate-200 shadow-sm flex flex-col items-center">
-              <Sparkles className="text-indigo-200 mb-3" size={32} />
-              <p className="text-slate-500 font-bold text-base">Your journey awaits!</p>
-              <p className="text-slate-400 font-medium text-xs mt-1">Log your first ultrasound or moment.</p>
-            </div>
-          ) : (
-             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative">
-              {/* Vertical Timeline Divider */}
-              <div className="absolute left-6 top-6 bottom-4 w-0.5 bg-slate-200 z-0 hidden" />
-              
-              {milestones.map((item) => (
-                <Card 
-                  key={item.id} 
-                  className="rounded-2xl flex flex-col bg-white shadow-sm border border-slate-200/60 hover:shadow-md overflow-hidden relative z-10 transition-shadow duration-200"
-                >
-                  {item.imageUrl && (
-                    <div className="w-full aspect-[4/3] bg-slate-100 relative">
-                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                       <img 
-                         src={item.imageUrl} 
-                         alt={item.title}
-                         className="object-cover w-full h-full"
-                       />
-                    </div>
-                  )}
-
-                  <div className="p-5 flex flex-col gap-3">
-                    <div className="flex items-start justify-between">
-                      <div className="flex flex-col">
-                        <span className="text-xs font-bold uppercase tracking-widest text-indigo-600 mb-1">
-                          {format(item.date, "MMMM do, yyyy")}
-                        </span>
-                        <h2 className="font-extrabold text-xl text-slate-800 leading-tight">{item.title}</h2>
-                      </div>
-                      <button onClick={() => deleteMilestone(item.id)} className="text-slate-300 hover:text-red-500 p-2 -mt-2 -mr-2 rounded-full hover:bg-slate-50 flex-shrink-0 transition-colors">
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                    
-                    {item.notes && (
-                      <p className="text-slate-600 leading-relaxed font-medium mt-1 whitespace-pre-wrap text-sm border-l-2 border-slate-100 pl-3">
-                        {item.notes}
-                      </p>
-                    )}
-                  </div>
-                </Card>
-              ))}
-            </div>
-          )}
-        </div>
-
+    <div className="max-w-7xl mx-auto py-8 lg:py-12 px-4 md:px-8">
+      <div className="mb-10 text-center md:text-left">
+        <h1 className="text-slate-900 font-semibold tracking-tight text-3xl md:text-4xl">
+          The Journey
+        </h1>
+        <p className="text-slate-500 mt-3 text-lg max-w-2xl">
+          A visual timeline of your pregnancy milestones, updates, and memories.
+        </p>
       </div>
+
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="bg-white shadow-sm border border-slate-200/60 rounded-2xl overflow-hidden animate-pulse">
+              <div className="w-full h-48 md:h-64 bg-slate-200"></div>
+              <div className="p-6 space-y-4">
+                <div className="h-3 w-1/3 bg-slate-200 rounded"></div>
+                <div className="h-6 w-3/4 bg-slate-200 rounded"></div>
+                <div className="space-y-2">
+                  <div className="h-4 w-full bg-slate-200 rounded"></div>
+                  <div className="h-4 w-5/6 bg-slate-200 rounded"></div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : milestones.length === 0 ? (
+        <div className="bg-slate-50 border border-slate-200/50 rounded-3xl p-16 text-center shadow-inner">
+          <div className="bg-white w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+            <ImageIcon className="text-slate-300" size={32} />
+          </div>
+          <h2 className="text-xl font-bold text-slate-700 mb-2">No Milestones Yet</h2>
+          <p className="text-slate-500 max-w-md mx-auto">
+            Your timeline is empty. Head over to the Admin Hub to secure your first memory!
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {milestones.map((m) => (
+            <div 
+              key={m.id} 
+              className="bg-white shadow-sm border border-slate-200/60 rounded-2xl overflow-hidden hover:shadow-md transition-shadow duration-200 group"
+            >
+              {m.imageUrl ? (
+                <div className="w-full h-48 md:h-64 relative overflow-hidden bg-slate-100">
+                  <img 
+                    src={m.imageUrl} 
+                    alt={m.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                </div>
+              ) : (
+                <div className="w-full h-48 md:h-64 bg-slate-50 flex items-center justify-center border-b border-slate-100">
+                  <ImageIcon className="text-slate-300 opacity-50" size={48} strokeWidth={1} />
+                </div>
+              )}
+              
+              <div className="p-6 flex flex-col h-full bg-white relative z-10">
+                <p className="text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">
+                   {m.date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric"})}
+                </p>
+                <h3 className="text-slate-900 font-semibold tracking-tight text-xl mb-3 leading-tight">
+                  {m.title}
+                </h3>
+                <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-wrap">
+                  {m.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
