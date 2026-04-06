@@ -84,7 +84,7 @@ export default function BudgetPage() {
               </div>
               <Progress 
                 value={Math.min(percentSpent, 100)} 
-                className="h-2.5 bg-black/20" 
+                className="h-3 bg-black/20" 
                 indicatorClassName={isOverBudget ? "bg-red-900" : "bg-white"} 
               />
             </div>
@@ -136,7 +136,7 @@ export default function BudgetPage() {
                 return (
                   <Card key={item.id} className={cn(
                     "p-4 rounded-2xl flex flex-col gap-3 shadow-sm transition-all duration-300",
-                    overItemBudget ? "border-red-200 bg-red-50/50" : "border-transparent bg-white hover:shadow-md"
+                    overItemBudget ? "border-red-200 bg-red-50/50" : "bg-white shadow-sm border border-slate-200/60 hover:shadow-md"
                   )}>
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">

@@ -60,11 +60,11 @@ export default function TasksPage() {
       );
     }
     return (
-      <div className="flex flex-col gap-3 mt-4 pb-8">
+      <div className="bg-white shadow-sm border border-slate-200/60 rounded-2xl hover:shadow-md transition-shadow duration-200 mt-4 overflow-hidden mb-8">
         {list.map((task) => (
           <div 
             key={task.id} 
-            className={`flex items-center gap-4 bg-white p-4 rounded-2xl border border-transparent shadow-sm hover:shadow-md transition-all duration-300 ${task.isCompleted ? 'opacity-50 hover:opacity-75' : ''}`}
+            className={`flex items-center gap-4 p-4 border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors duration-300 ${task.isCompleted ? 'opacity-50 hover:opacity-75' : ''}`}
           >
             <div className={`p-1.5 rounded-lg flex items-center justify-center transition-colors ${task.isCompleted ? 'bg-slate-100' : 'bg-indigo-50'}`}>
               <Checkbox 

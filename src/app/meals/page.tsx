@@ -74,7 +74,7 @@ export default function MealsPage() {
             key={meal.id} 
             className={cn(
               "p-4 rounded-2xl flex flex-col gap-2 shadow-sm transition-all duration-300",
-              isAvoidTab ? "border-red-300 bg-red-50/50" : "border-slate-200 bg-white"
+              isAvoidTab ? "border-red-300 bg-red-50/50" : "bg-white shadow-sm border border-slate-200/60 hover:shadow-md"
             )}
           >
             <div className="flex items-center justify-between">

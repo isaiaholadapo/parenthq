@@ -74,7 +74,7 @@ export default function NamesPage() {
               key={name.id} 
               className={cn(
                 "p-4 rounded-2xl flex items-center justify-between shadow-sm transition-all duration-300",
-                isMatchTab ? "border-green-400 bg-green-50/40" : "border-transparent bg-white hover:shadow-md"
+                isMatchTab ? "border-green-400 bg-green-50/40" : "bg-white shadow-sm border border-slate-200/60 hover:shadow-md"
               )}
             >
               <div className="flex flex-col gap-1.5">

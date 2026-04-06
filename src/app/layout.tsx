@@ -32,6 +32,13 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-slate-100">
         <AuthProvider>
           <main className="flex-1 pb-24 md:pb-8 md:pl-64 relative z-10 w-full overflow-x-hidden transition-all duration-300">
+            {/* Desktop Command Header */}
+            <div className="hidden md:flex h-16 border-b border-slate-200/60 bg-white/50 backdrop-blur-md items-center justify-between px-8 w-full sticky top-0 z-30">
+              <h2 className="text-slate-900 font-semibold tracking-tight text-lg">ParentHq Command Center</h2>
+              <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm shadow-sm border border-indigo-200">
+                P
+              </div>
+            </div>
             {children}
           </main>
           <NavigationWrapper />

@@ -157,7 +157,7 @@ export default function MilestonesPage() {
               {milestones.map((item) => (
                 <Card 
                   key={item.id} 
-                  className="rounded-3xl flex flex-col shadow-sm border-slate-200 bg-white overflow-hidden relative z-10"
+                  className="rounded-2xl flex flex-col bg-white shadow-sm border border-slate-200/60 hover:shadow-md overflow-hidden relative z-10 transition-shadow duration-200"
                 >
                   {item.imageUrl && (
                     <div className="w-full aspect-[4/3] bg-slate-100 relative">

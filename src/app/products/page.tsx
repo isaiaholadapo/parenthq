@@ -76,7 +76,7 @@ export default function ProductsPage() {
               key={item.id} 
               className={cn(
                 "p-4 rounded-3xl flex flex-col gap-4 shadow-sm transition-all duration-300",
-                currentTab === "Purchased" ? "border-green-200 bg-green-50/40" : "border-slate-200 bg-white hover:border-slate-300"
+                currentTab === "Purchased" ? "border-green-200 bg-green-50/40" : "bg-white shadow-sm border border-slate-200/60 hover:shadow-md"
               )}
             >
               <div className="flex items-start justify-between">

@@ -101,18 +101,19 @@ export default function QuestionsPage() {
                 <p className="text-slate-400 font-medium text-sm">No active questions right now.</p>
               </div>
             ) : (
-              <Accordion 
-                // @ts-expect-error Radix Accordion typing issue bypass for Vercel
-                type="single" 
-                collapsible 
-                className="w-full flex flex-col gap-3"
-              >
-                {activeQuestions.map((q) => (
-                  <AccordionItem 
-                    key={q.id} 
-                    value={q.id} 
-                    className="bg-white border border-transparent shadow-sm hover:shadow-md transition-shadow rounded-3xl px-5 py-1"
-                  >
+              <div className="bg-white shadow-sm border border-slate-200/60 rounded-2xl hover:shadow-md transition-shadow duration-200 overflow-hidden">
+                <Accordion 
+                  // @ts-expect-error Radix Accordion typing issue bypass for Vercel
+                  type="single" 
+                  collapsible 
+                  className="w-full flex flex-col"
+                >
+                  {activeQuestions.map((q) => (
+                    <AccordionItem 
+                      key={q.id} 
+                      value={q.id} 
+                      className="border-b border-slate-100 last:border-0 px-5 py-1 bg-white hover:bg-slate-50 transition-colors"
+                    >
                     <AccordionTrigger className="hover:no-underline text-left py-4 gap-4 data-[state=open]:border-b data-[state=open]:border-slate-100 data-[state=open]:pb-4">
                       <div className="flex items-start gap-3 w-full">
                          {q.priority === "high" && (
@@ -149,7 +150,8 @@ export default function QuestionsPage() {
                     </AccordionContent>
                   </AccordionItem>
                 ))}
-              </Accordion>
+                </Accordion>
+              </div>
             )}
           </div>
 
@@ -162,18 +164,19 @@ export default function QuestionsPage() {
                 <div className="h-[1px] flex-1 bg-slate-200" />
               </div>
 
-              <Accordion 
-                // @ts-expect-error Radix Accordion typing issue bypass for Vercel
-                type="single" 
-                collapsible 
-                className="w-full flex flex-col gap-3"
-              >
-                {resolvedQuestions.map((q) => (
-                  <AccordionItem 
-                    key={q.id} 
-                    value={q.id} 
-                    className="bg-white border border-transparent shadow-sm rounded-3xl px-5 py-1 opacity-75 hover:opacity-100 transition-opacity"
-                  >
+              <div className="bg-white shadow-sm border border-slate-200/60 rounded-2xl overflow-hidden opacity-75 hover:opacity-100 transition-opacity">
+                <Accordion 
+                  // @ts-expect-error Radix Accordion typing issue bypass for Vercel
+                  type="single" 
+                  collapsible 
+                  className="w-full flex flex-col"
+                >
+                  {resolvedQuestions.map((q) => (
+                    <AccordionItem 
+                      key={q.id} 
+                      value={q.id} 
+                      className="border-b border-slate-100 last:border-0 px-5 py-1 bg-white hover:bg-slate-50 transition-colors"
+                    >
                     <AccordionTrigger className="hover:no-underline text-left py-4 gap-4">
                       <div className="flex items-start gap-3 w-full">
                          <div className="text-green-500 mt-0.5 flex-shrink-0">
@@ -197,7 +200,8 @@ export default function QuestionsPage() {
                     </AccordionContent>
                   </AccordionItem>
                 ))}
-              </Accordion>
+                </Accordion>
+              </div>
             </div>
           )}
 
