@@ -37,14 +37,6 @@ export default function HomePage() {
     }
   }, [user, authLoading, router]);
 
-  if (authLoading || familyLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <p className="text-slate-500 animate-pulse font-medium">Loading HUD...</p>
-      </div>
-    );
-  }
-
   // Prevent flash of content before redirecting
   if (!user) {
     return null;
