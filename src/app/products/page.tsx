@@ -65,7 +65,7 @@ export default function ProductsPage() {
     }
 
     return (
-      <div className="flex flex-col gap-4 mt-4 pb-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4 pb-12">
         {list.map((item) => {
           const userVote = user ? item.votes[user.uid] : 0;
           const upvotes = Object.values(item.votes).filter((v) => v === 1).length;
@@ -160,7 +160,7 @@ export default function ProductsPage() {
 
   return (
     <div className="w-full flex flex-col items-center">
-      <div className="w-full max-w-md flex flex-col">
+      <div className="w-full max-w-md md:max-w-5xl mx-auto md:px-8 flex flex-col">
         
         {/* Sticky Header */}
         <div className="sticky top-0 bg-slate-50/90 backdrop-blur-md pt-6 pb-4 px-4 z-10 border-b border-slate-200 shadow-sm flex items-center justify-between">

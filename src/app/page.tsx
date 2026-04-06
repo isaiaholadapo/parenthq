@@ -64,7 +64,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-slate-50 p-4 pb-32 flex flex-col items-center">
-      <div className="w-full max-w-md flex flex-col gap-6 pt-4">
+      <div className="w-full max-w-md md:max-w-5xl mx-auto md:px-8 flex flex-col gap-6 pt-4">
         
         {/* Top App Bar */}
         <div className="flex justify-between items-center px-2">

@@ -60,7 +60,7 @@ export default function BudgetPage() {
 
   return (
     <div className="w-full flex flex-col items-center">
-      <div className="w-full max-w-md flex flex-col">
+      <div className="w-full max-w-md md:max-w-5xl mx-auto md:px-8 flex flex-col">
         
         {/* Sticky Header */}
         <div className="sticky top-0 bg-slate-50/90 backdrop-blur-md pt-6 pb-4 px-4 z-10 border-b border-slate-200 shadow-sm">
@@ -128,7 +128,7 @@ export default function BudgetPage() {
               <p className="text-slate-400 font-medium text-sm">No budget items allocated yet.</p>
             </div>
           ) : (
-            <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {budgetItems.map((item) => {
                 const draft = spentDrafts[item.id] !== undefined ? spentDrafts[item.id] : item.spent.toString();
                 const overItemBudget = parseFloat(draft) > item.allocated;

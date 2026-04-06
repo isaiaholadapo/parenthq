@@ -62,7 +62,7 @@ export default function MilestonesPage() {
 
   return (
     <div className="w-full flex flex-col items-center">
-      <div className="w-full max-w-md flex flex-col">
+      <div className="w-full max-w-md md:max-w-5xl mx-auto md:px-8 flex flex-col">
         
         {/* Sticky Header */}
         <div className="sticky top-0 bg-slate-50/90 backdrop-blur-md pt-6 pb-4 px-4 z-10 border-b border-slate-200 shadow-sm flex items-center justify-between">
@@ -150,7 +150,7 @@ export default function MilestonesPage() {
               <p className="text-slate-400 font-medium text-xs mt-1">Log your first ultrasound or moment.</p>
             </div>
           ) : (
-             <div className="flex flex-col gap-6 relative">
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative">
               {/* Vertical Timeline Divider */}
               <div className="absolute left-6 top-6 bottom-4 w-0.5 bg-slate-200 z-0 hidden" />
               

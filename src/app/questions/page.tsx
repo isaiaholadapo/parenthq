@@ -56,7 +56,7 @@ export default function QuestionsPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col items-center">
-      <div className="w-full max-w-md w-full">
+      <div className="w-full max-w-3xl mx-auto flex flex-col w-full">
         {/* Sticky Header / Input */}
         <div className="sticky top-0 bg-slate-50/90 backdrop-blur-md pt-6 pb-4 px-4 z-10 border-b border-slate-200 shadow-sm">
           <h1 className="text-2xl font-bold text-slate-800 tracking-tight mb-4">OBGYN Log</h1>

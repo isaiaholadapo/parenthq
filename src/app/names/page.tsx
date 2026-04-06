@@ -65,7 +65,7 @@ export default function NamesPage() {
     }
 
     return (
-      <div className="flex flex-col gap-3 mt-4 pb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 pb-8">
         {list.map((name) => {
           const userVote = user ? name.votes[user.uid] : 0;
           
@@ -133,7 +133,7 @@ export default function NamesPage() {
 
   return (
     <div className="w-full flex flex-col items-center">
-      <div className="w-full max-w-md flex flex-col">
+      <div className="w-full max-w-md md:max-w-5xl mx-auto md:px-8 flex flex-col">
         
         {/* Sticky Header / Input */}
         <div className="sticky top-0 bg-slate-50/90 backdrop-blur-md pt-6 pb-4 px-4 z-10 border-b border-slate-200 shadow-sm">

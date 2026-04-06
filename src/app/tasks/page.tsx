@@ -88,7 +88,7 @@ export default function TasksPage() {
 
   return (
     <div className="w-full flex flex-col items-center">
-      <div className="w-full max-w-md flex flex-col">
+      <div className="w-full max-w-3xl mx-auto flex flex-col">
         
         {/* Sticky Header / Input */}
         <div className="sticky top-0 bg-slate-50/90 backdrop-blur-md pt-6 pb-4 px-4 z-10 border-b border-slate-200 shadow-sm">
