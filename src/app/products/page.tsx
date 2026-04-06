@@ -163,7 +163,7 @@ export default function ProductsPage() {
       <div className="w-full max-w-md md:max-w-5xl mx-auto md:px-8 flex flex-col">
         
         {/* Sticky Header */}
-        <div className="sticky top-0 bg-slate-50/90 backdrop-blur-md pt-6 pb-4 px-4 z-10 border-b border-slate-200 shadow-sm flex items-center justify-between">
+        <div className="sticky top-0 bg-white/90 backdrop-blur-md pt-6 pb-4 px-4 z-10 border-b border-slate-200 shadow-sm flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Gear Pipeline</h1>
           
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

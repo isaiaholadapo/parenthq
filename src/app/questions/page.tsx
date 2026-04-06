@@ -58,7 +58,7 @@ export default function QuestionsPage() {
     <div className="min-h-screen bg-slate-50 flex flex-col items-center">
       <div className="w-full max-w-3xl mx-auto flex flex-col w-full">
         {/* Sticky Header / Input */}
-        <div className="sticky top-0 bg-slate-50/90 backdrop-blur-md pt-6 pb-4 px-4 z-10 border-b border-slate-200 shadow-sm">
+        <div className="sticky top-0 bg-white/90 backdrop-blur-md pt-6 pb-4 px-4 z-10 border-b border-slate-200 shadow-sm">
           <h1 className="text-2xl font-bold text-slate-800 tracking-tight mb-4">OBGYN Log</h1>
           <div className="bg-white p-4 rounded-3xl shadow-sm border border-slate-200 flex flex-col gap-3">
             <Textarea
@@ -111,7 +111,7 @@ export default function QuestionsPage() {
                   <AccordionItem 
                     key={q.id} 
                     value={q.id} 
-                    className="bg-white border border-slate-200 shadow-sm rounded-3xl px-5 py-1"
+                    className="bg-white border border-transparent shadow-sm hover:shadow-md transition-shadow rounded-3xl px-5 py-1"
                   >
                     <AccordionTrigger className="hover:no-underline text-left py-4 gap-4 data-[state=open]:border-b data-[state=open]:border-slate-100 data-[state=open]:pb-4">
                       <div className="flex items-start gap-3 w-full">
@@ -172,7 +172,7 @@ export default function QuestionsPage() {
                   <AccordionItem 
                     key={q.id} 
                     value={q.id} 
-                    className="bg-white border border-slate-200 shadow-sm rounded-3xl px-5 py-1 opacity-75 hover:opacity-100 transition-opacity"
+                    className="bg-white border border-transparent shadow-sm rounded-3xl px-5 py-1 opacity-75 hover:opacity-100 transition-opacity"
                   >
                     <AccordionTrigger className="hover:no-underline text-left py-4 gap-4">
                       <div className="flex items-start gap-3 w-full">

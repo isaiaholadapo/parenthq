@@ -74,7 +74,7 @@ export default function NamesPage() {
               key={name.id} 
               className={cn(
                 "p-4 rounded-2xl flex items-center justify-between shadow-sm transition-all duration-300",
-                isMatchTab ? "border-green-400 bg-green-50/40" : "border-slate-200 bg-white hover:border-slate-300"
+                isMatchTab ? "border-green-400 bg-green-50/40" : "border-transparent bg-white hover:shadow-md"
               )}
             >
               <div className="flex flex-col gap-1.5">
@@ -136,7 +136,7 @@ export default function NamesPage() {
       <div className="w-full max-w-md md:max-w-5xl mx-auto md:px-8 flex flex-col">
         
         {/* Sticky Header / Input */}
-        <div className="sticky top-0 bg-slate-50/90 backdrop-blur-md pt-6 pb-4 px-4 z-10 border-b border-slate-200 shadow-sm">
+        <div className="sticky top-0 bg-white/90 backdrop-blur-md pt-6 pb-4 px-4 z-10 border-b border-slate-200 shadow-sm">
           <h1 className="text-2xl font-bold text-slate-800 tracking-tight mb-4">Name Vault</h1>
           <div className="bg-white p-4 rounded-3xl shadow-sm border border-slate-200 flex flex-col gap-3">
             <Input

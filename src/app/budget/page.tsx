@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Trash2 } from "lucide-react";
+import { Trash2, PoundSterling } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -63,7 +63,7 @@ export default function BudgetPage() {
       <div className="w-full max-w-md md:max-w-5xl mx-auto md:px-8 flex flex-col">
         
         {/* Sticky Header */}
-        <div className="sticky top-0 bg-slate-50/90 backdrop-blur-md pt-6 pb-4 px-4 z-10 border-b border-slate-200 shadow-sm">
+        <div className="sticky top-0 bg-white/90 backdrop-blur-md pt-6 pb-4 px-4 z-10 border-b border-slate-200 shadow-sm">
           <h1 className="text-2xl font-bold text-slate-800 tracking-tight mb-4">Nursery Budget</h1>
           
           <Card className={cn(
@@ -136,12 +136,17 @@ export default function BudgetPage() {
                 return (
                   <Card key={item.id} className={cn(
                     "p-4 rounded-2xl flex flex-col gap-3 shadow-sm transition-all duration-300",
-                    overItemBudget ? "border-red-200 bg-red-50/50" : "border-slate-200 bg-white hover:border-slate-300"
+                    overItemBudget ? "border-red-200 bg-red-50/50" : "border-transparent bg-white hover:shadow-md"
                   )}>
                     <div className="flex items-start justify-between">
-                      <div className="flex flex-col">
-                        <span className="font-bold text-lg text-slate-800 leading-tight">{item.title}</span>
-                        <span className="text-xs font-bold tracking-wide mt-0.5 text-slate-400">Allocated: £{item.allocated.toLocaleString('en-GB')}</span>
+                      <div className="flex items-center gap-3">
+                        <div className="p-2.5 bg-emerald-100 text-emerald-700 rounded-xl shadow-inner">
+                           <PoundSterling size={20} strokeWidth={2.5} />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-bold text-lg text-slate-800 leading-tight">{item.title}</span>
+                          <span className="text-xs font-bold tracking-wide mt-0.5 text-slate-400">Allocated: £{item.allocated.toLocaleString('en-GB')}</span>
+                        </div>
                       </div>
                       <button onClick={() => deleteBudgetItem(item.id)} className="text-slate-300 hover:text-red-500 p-2 -mr-2 -mt-2 rounded-full hover:bg-slate-50 transition-colors pointer"><Trash2 size={18} /></button>
                     </div>

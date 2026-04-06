@@ -96,7 +96,7 @@ export default function HomePage() {
             </CardContent>
           </Card>
         ) : (
-          <Card className="bg-white border-slate-200 shadow-sm rounded-3xl overflow-hidden border">
+          <Card className="bg-white border-transparent shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] rounded-3xl overflow-hidden border">
             <CardContent className="p-6 flex flex-col gap-6">
               <div>
                 <p className="text-slate-500 font-medium text-sm">Hello, {username}</p>
@@ -128,9 +128,9 @@ export default function HomePage() {
         {/* Action Row */}
         <div className="grid grid-cols-2 gap-4">
           <a title="Call Midwife" href={familyData?.midwifePhone ? `tel:${familyData.midwifePhone}` : "#"} className="block group">
-            <Card className="bg-white border-slate-200 shadow-sm rounded-3xl cursor-pointer group-hover:border-indigo-200 transition-all hover:shadow-md h-full">
+            <Card className="bg-white border-transparent shadow-sm hover:shadow-md transition-shadow rounded-3xl cursor-pointer group-hover:-translate-y-0.5 h-full">
               <CardContent className="p-5 flex flex-col items-center text-center gap-3">
-                <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center">
+                <div className="p-3 bg-indigo-100 text-indigo-700 rounded-xl">
                   <Phone size={22} strokeWidth={2.5} />
                 </div>
                 <div>
@@ -141,9 +141,9 @@ export default function HomePage() {
           </a>
           
           <a title="Maternity Route" href={familyData?.maternityUnitRoute || "#"} target={familyData?.maternityUnitRoute ? "_blank" : undefined} rel="noopener noreferrer" className="block group">
-            <Card className="bg-white border-slate-200 shadow-sm rounded-3xl cursor-pointer group-hover:border-indigo-200 transition-all hover:shadow-md h-full">
+            <Card className="bg-white border-transparent shadow-sm hover:shadow-md transition-shadow rounded-3xl cursor-pointer group-hover:-translate-y-0.5 h-full">
               <CardContent className="p-5 flex flex-col items-center text-center gap-3">
-                 <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center">
+                 <div className="p-3 bg-indigo-100 text-indigo-700 rounded-xl">
                   <MapPin size={22} strokeWidth={2.5} />
                 </div>
                  <div>
@@ -157,10 +157,10 @@ export default function HomePage() {
         {/* Reminders Widget */}
         <div className="mt-2">
           <h3 className="font-bold text-slate-800 text-lg mb-3 px-2">Upcoming Events</h3>
-          <Card className="bg-white border-slate-200 shadow-sm rounded-3xl overflow-hidden">
+          <Card className="bg-white border-transparent shadow-sm rounded-3xl overflow-hidden">
             <CardContent className="p-0 flex flex-col">
-               <div className="p-4 border-b border-slate-100 flex items-center gap-4 hover:bg-slate-50 transition-colors">
-                 <div className="w-10 h-10 rounded-2xl bg-indigo-50 flex flex-col items-center justify-center text-indigo-600 shadow-inner">
+               <div className="p-4 border-b border-slate-50 flex items-center gap-4 hover:bg-slate-50 transition-colors">
+                 <div className="p-2.5 bg-indigo-100 text-indigo-700 rounded-lg">
                    <Calendar size={18} strokeWidth={2.5} />
                  </div>
                  <div className="flex-1">
@@ -171,7 +171,7 @@ export default function HomePage() {
                </div>
                
                <div className="p-4 flex items-center gap-4 hover:bg-slate-50 transition-colors">
-                 <div className="w-10 h-10 rounded-2xl bg-slate-100 flex flex-col items-center justify-center text-slate-600 shadow-inner">
+                 <div className="p-2.5 bg-slate-100 text-slate-600 rounded-lg">
                    <Calendar size={18} strokeWidth={2.5} />
                  </div>
                  <div className="flex-1">

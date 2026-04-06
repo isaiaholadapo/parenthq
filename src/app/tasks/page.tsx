@@ -64,13 +64,15 @@ export default function TasksPage() {
         {list.map((task) => (
           <div 
             key={task.id} 
-            className={`flex items-center gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm transition-all duration-300 ${task.isCompleted ? 'opacity-50 hover:opacity-75' : ''}`}
+            className={`flex items-center gap-4 bg-white p-4 rounded-2xl border border-transparent shadow-sm hover:shadow-md transition-all duration-300 ${task.isCompleted ? 'opacity-50 hover:opacity-75' : ''}`}
           >
-            <Checkbox 
-              checked={task.isCompleted} 
-              onCheckedChange={(checked) => toggleTask(task.id, checked as boolean)}
-              className="w-5 h-5 rounded-full border-slate-300 data-[state=checked]:bg-indigo-600 data-[state=checked]:text-white shadow-sm"
-            />
+            <div className={`p-1.5 rounded-lg flex items-center justify-center transition-colors ${task.isCompleted ? 'bg-slate-100' : 'bg-indigo-50'}`}>
+              <Checkbox 
+                checked={task.isCompleted} 
+                onCheckedChange={(checked) => toggleTask(task.id, checked as boolean)}
+                className="w-5 h-5 rounded-full border-slate-300 data-[state=checked]:bg-indigo-600 data-[state=checked]:text-white shadow-sm"
+              />
+            </div>
             <span className={`flex-1 font-medium text-sm leading-tight transition-all ${task.isCompleted ? 'line-through text-slate-400' : 'text-slate-800'}`}>
               {task.title}
             </span>
@@ -91,7 +93,7 @@ export default function TasksPage() {
       <div className="w-full max-w-3xl mx-auto flex flex-col">
         
         {/* Sticky Header / Input */}
-        <div className="sticky top-0 bg-slate-50/90 backdrop-blur-md pt-6 pb-4 px-4 z-10 border-b border-slate-200 shadow-sm">
+        <div className="sticky top-0 bg-white/90 backdrop-blur-md pt-6 pb-4 px-4 z-10 border-b border-slate-200 shadow-sm">
           <h1 className="text-2xl font-bold text-slate-800 tracking-tight mb-4">Logistics & Go-Bag</h1>
           <div className="bg-white p-4 rounded-3xl shadow-sm border border-slate-200 flex flex-col gap-3">
             <Input

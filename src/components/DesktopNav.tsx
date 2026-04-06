@@ -20,9 +20,9 @@ export function DesktopNav() {
   const pathname = usePathname();
 
   return (
-    <div className="hidden md:flex flex-col w-64 fixed inset-y-0 left-0 border-r border-slate-200 bg-white z-40 shadow-sm transition-all duration-300">
+    <div className="hidden md:flex flex-col w-64 fixed inset-y-0 left-0 border-none bg-slate-900 z-40 shadow-xl transition-all duration-300">
       <div className="p-6 h-full flex flex-col">
-        <h2 className="text-2xl font-extrabold tracking-tight text-slate-800 mb-8 pl-2 w-full flex items-center gap-2">
+        <h2 className="text-2xl font-extrabold tracking-tight text-white mb-8 pl-2 w-full flex items-center gap-2">
            👶 ParentHq
         </h2>
         
@@ -36,11 +36,11 @@ export function DesktopNav() {
                 key={item.href} 
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-200 w-full font-bold shadow-none",
-                  isActive ? "bg-indigo-50 text-indigo-700 shadow-sm" : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
+                  "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 w-full font-bold shadow-none",
+                  isActive ? "bg-indigo-600 text-white shadow-md border border-indigo-500/20" : "text-slate-400 hover:text-white hover:bg-slate-800/50"
                 )}
               >
-                <Icon size={20} className={cn(isActive ? "text-indigo-600" : "text-slate-400")} strokeWidth={isActive ? 2.5 : 2} />
+                <Icon size={20} className={cn(isActive ? "text-indigo-100" : "text-slate-400")} strokeWidth={isActive ? 2.5 : 2} />
                 <span className="text-sm tracking-wide">{item.name}</span>
               </Link>
             );
