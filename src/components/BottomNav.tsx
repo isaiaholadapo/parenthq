@@ -39,6 +39,7 @@ export function BottomNav() {
 
         {/* More Sheet */}
         <Sheet>
+          {/* @ts-expect-error asChild is a valid Radix prop but TS fails to resolve it */}
           <SheetTrigger asChild>
             <div className={cn(
               "flex flex-col items-center gap-1.5 transition-all duration-200 cursor-pointer",

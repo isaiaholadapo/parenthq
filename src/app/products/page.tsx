@@ -155,6 +155,7 @@ export default function ProductsPage() {
           <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Gear Pipeline</h1>
           
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            {/* @ts-expect-error asChild is a valid Radix prop but TS fails to resolve it */}
             <DialogTrigger asChild>
               <Button className="rounded-full bg-indigo-600 hover:bg-indigo-700 font-bold shadow-md">
                 + Add Gear

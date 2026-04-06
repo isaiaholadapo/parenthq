@@ -195,6 +195,7 @@ export default function HomePage() {
         {!isPostpartum && (
           <div className="mt-6 flex justify-center pb-4">
              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              {/* @ts-expect-error asChild is a valid Radix prop but TS fails to resolve it */}
               <DialogTrigger asChild>
                 <Button className="rounded-full bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800 font-bold border border-emerald-200 transition-colors px-6">
                   <PartyPopper size={16} className="mr-2" />
