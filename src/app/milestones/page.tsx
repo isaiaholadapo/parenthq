@@ -11,6 +11,7 @@ import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Trash2, Sparkles, Image as ImageIcon, Loader2 } from "lucide-react";
 import Image from "next/image";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function MilestonesPage() {
   const { user } = useAuth();
@@ -44,8 +45,17 @@ export default function MilestonesPage() {
 
   if (loading) {
     return (
-      <div className="w-full flex items-center justify-center p-12">
-        <p className="text-slate-500 animate-pulse font-medium">Loading timeline...</p>
+      <div className="w-full flex flex-col items-center animate-in fade-in duration-300">
+        <div className="w-full max-w-md flex flex-col pt-6 px-4">
+          <div className="flex items-center justify-between mb-6">
+            <Skeleton className="h-8 w-32 bg-slate-200" />
+            <Skeleton className="h-10 w-28 rounded-full bg-slate-200" />
+          </div>
+          <div className="flex flex-col gap-6 pb-12">
+            <Skeleton className="h-64 w-full rounded-3xl bg-slate-200" />
+            <Skeleton className="h-64 w-full rounded-3xl bg-slate-200" />
+          </div>
+        </div>
       </div>
     );
   }

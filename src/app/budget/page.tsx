@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function BudgetPage() {
   const { user } = useAuth();
@@ -40,8 +41,16 @@ export default function BudgetPage() {
 
   if (loading) {
     return (
-      <div className="w-full flex items-center justify-center p-12">
-        <p className="text-slate-500 animate-pulse font-medium">Loading ledger...</p>
+      <div className="w-full flex flex-col items-center animate-in fade-in duration-300">
+        <div className="w-full max-w-md flex flex-col pt-6 px-4">
+          <Skeleton className="h-8 w-48 mb-4 bg-slate-200" />
+          <Skeleton className="h-32 w-full rounded-3xl bg-slate-200 mb-4" />
+          <Skeleton className="h-32 w-full rounded-3xl bg-slate-200 mb-4" />
+          <div className="flex flex-col gap-3 pt-4 pb-12">
+            <Skeleton className="h-32 w-full rounded-2xl bg-slate-200" />
+            <Skeleton className="h-32 w-full rounded-2xl bg-slate-200" />
+          </div>
+        </div>
       </div>
     );
   }

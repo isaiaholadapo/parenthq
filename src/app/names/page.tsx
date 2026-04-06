@@ -17,6 +17,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ThumbsUp, ThumbsDown, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function NamesPage() {
   const { user } = useAuth();
@@ -33,8 +34,17 @@ export default function NamesPage() {
 
   if (loading) {
     return (
-      <div className="w-full flex items-center justify-center p-12">
-        <p className="text-slate-500 animate-pulse font-medium">Loading vault...</p>
+      <div className="w-full flex flex-col items-center animate-in fade-in duration-300">
+        <div className="w-full max-w-md flex flex-col pt-6 px-4">
+          <Skeleton className="h-8 w-40 mb-4 bg-slate-200" />
+          <Skeleton className="h-32 w-full rounded-3xl bg-slate-200 mb-6" />
+          <div className="flex bg-slate-200/50 p-1.5 rounded-2xl h-12 mb-4 w-full" />
+          <div className="flex flex-col gap-3 pb-8">
+            <Skeleton className="h-24 w-full rounded-2xl bg-slate-200" />
+            <Skeleton className="h-24 w-full rounded-2xl bg-slate-200" />
+            <Skeleton className="h-24 w-full rounded-2xl bg-slate-200" />
+          </div>
+        </div>
       </div>
     );
   }
